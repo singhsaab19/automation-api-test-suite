@@ -59,7 +59,7 @@ jobs:
       - name: Wait for API Health Check
         run: |
           echo "Waiting for API to initialize..."
-          timeout 30s bash -c 'until curl -s http://localhost:3100/api/inventory > /dev/null; do sleep 2; done'
+          timeout 90s bash -c 'until curl -s http://localhost:3100/api/inventory > /dev/null; do sleep 5; done'
           echo "API is up and healthy!"
 
       - name: Run Karate Tests
