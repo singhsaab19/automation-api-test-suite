@@ -51,17 +51,26 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      # --- NEW STEP: Install QEMU Emulator for ARM64 ---
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Start Demo API via Docker
         run: |
           docker pull automaticbytes/demo-app
           docker run -d -p 3100:3100 --name api-service automaticbytes/demo-app
 
+      # --- UPGRADED STEP: Health check with automatic debugging ---
       - name: Wait for API Health Check
         run: |
           echo "Waiting for API to initialize..."
-          timeout 30s bash -c 'until curl -s http://localhost:3100/api/inventory > /dev/null; do sleep 2; done'
+          if timeout 90s bash -c 'until curl -s http://localhost:3100/api/inventory > /dev/null; do sleep 5; done'; then
           echo "API is up and healthy!"
-
+          else
+          echo "API failed to start in time. Printing Docker logs for debugging:"
+          docker logs api-service
+          exit 1
+          fi
       - name: Run Karate Tests
         # Uses UI inputs if triggered manually; otherwise falls back to 'qa' and default tags
         env:
