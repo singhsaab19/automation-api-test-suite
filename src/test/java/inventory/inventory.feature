@@ -42,12 +42,12 @@ Feature: Inventory Management API Tests
     Then status 400
 
     # Step 3: Validate recently added item is present in the inventory
-    Given path 'inventory'
+    Given path 'inventory/filter'
+    And param id = uniqueId
     When method GET
     Then status 200
-    # Use JSONPath to find the specific item we injected to verify it exists
-    * def addedItem = karate.jsonPath(response, "$.data[?(@.id == '" + uniqueId + "')]")
-    And match addedItem[0] contains newItemPayload
+    # validate response aginst the original payload to ensure data consistency
+    And match response contains newItemPayload
 
   @negative @validation
   Scenario: Try to add item with missing information
@@ -56,5 +56,5 @@ Feature: Inventory Management API Tests
     And request { name: 'Hawaiian', image: 'hawaiian.png', price: '$14' }
     When method POST
     Then status 400
-    # Match string anywhere in the response if the exact JSON error structure is unknown
+    # Match string anywhere in the response
     And match response contains 'Not all requirements are met'
