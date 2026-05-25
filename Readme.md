@@ -1,6 +1,8 @@
 # Home Test API - Assignment Test Suite
 
-Github URL: https://github.com/singhsaab19/automation-api-test-suite
+**Github URL**: https://github.com/singhsaab19/automation-api-test-suite
+
+**Report Dashboard URL**: https://singhsaab19.github.io/automation-api-test-suite/
 
 This repository contains the automated API test suite for the `automaticbytes/demo-app` using [Karate](https://github.com/karatelabs/karate) and Java/Maven.
 
