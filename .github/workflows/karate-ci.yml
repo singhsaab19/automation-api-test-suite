@@ -1,0 +1,87 @@
+name: API Regression Test Suite
+
+on:
+  # 1. Runs automatically on code merges to main branches
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+  # 2. Runs automatically on a schedule (Nightly Regression)
+  schedule:
+    # Runs at 00:00 (midnight) UTC every day
+    - cron: '0 0 * * *'
+
+  # 3. Creates a UI form in GitHub for manual execution
+  workflow_dispatch:
+    inputs:
+      env:
+        description: 'Target Environment'
+        required: true
+        default: 'qa'
+        type: choice
+        options:
+          - qa
+          - dev
+          - prod
+      tags:
+        description: 'Karate Tags to Run (e.g., @smoke)'
+        required: true
+        default: '@smoke,@e2e,@negative'
+        type: string
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Start Demo API via Docker
+        run: |
+          docker pull automaticbytes/demo-app
+          docker run -d -p 3100:3100 --name api-service automaticbytes/demo-app
+
+      - name: Wait for API Health Check
+        run: |
+          echo "Waiting for API to initialize..."
+          timeout 30s bash -c 'until curl -s http://localhost:3100/api/inventory > /dev/null; do sleep 2; done'
+          echo "API is up and healthy!"
+
+      - name: Run Karate Tests
+        # Uses UI inputs if triggered manually; otherwise falls back to 'qa' and default tags
+        env:
+          KARATE_ENV: ${{ github.event.inputs.env || 'qa' }}
+          KARATE_TAGS: ${{ github.event.inputs.tags || '@smoke,@e2e,@negative' }}
+        run: |
+          echo "Running tests in environment: $KARATE_ENV with tags: $KARATE_TAGS"
+          mvn test "-Dkarate.env=$KARATE_ENV" "-Dkarate.options=--tags $KARATE_TAGS"
+
+      # --- Publish Dashboard to GitHub Pages ---
+      - name: Setup GitHub Pages
+        if: always()
+        uses: actions/configure-pages@v4
+
+      - name: Upload Report Artifact
+        if: always()
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: target/karate-reports/
+
+      - name: Deploy Report to GitHub Pages
+        if: always()
+        uses: actions/deploy-pages@v4
