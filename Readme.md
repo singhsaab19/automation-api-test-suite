@@ -1,8 +1,6 @@
-# Home Test API - Inventory Test Suite
+# Home Test API - Assignment Test Suite
 
-![API Regression Test Suite](https://github.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPO_NAME>/actions/workflows/karate-ci.yml/badge.svg)
-
-> 🌐 **Live Test Dashboard:** [View Passing Reports Dashboard](https://<YOUR_GITHUB_USERNAME>.github.io/<YOUR_REPO_NAME>/karate-summary.html)
+Github URL: https://github.com/singhsaab19/automation-api-test-suite
 
 This repository contains the automated API test suite for the `automaticbytes/demo-app` using [Karate](https://github.com/karatelabs/karate) and Java/Maven.
 
