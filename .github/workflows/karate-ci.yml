@@ -81,6 +81,12 @@ jobs:
           mvn test "-Dkarate.env=$KARATE_ENV" "-Dkarate.options=--tags $KARATE_TAGS"
 
       # --- Publish Dashboard to GitHub Pages ---
+      - name: Prepare GitHub Pages Report
+        if: always()
+        run: |
+          cp target/karate-reports/karate-summary.html target/karate-reports/index.html
+
+      # --- Publish Dashboard to GitHub Pages ---
       - name: Setup GitHub Pages
         if: always()
         uses: actions/configure-pages@v4
