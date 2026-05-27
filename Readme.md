@@ -8,7 +8,7 @@ This repository contains the automated API test suite for the `automaticbytes/de
 
 ## 🚀 Design Decisions & Bonus Features
 
-* **Idempotency (Multiple Executions):** Rather than hardcoding ID "10" for the POST requests, the test suite utilizes a Java `UUID` generator in the `Background` block. This ensures a unique item is created on every test run, allowing the suite to be executed infinitely without requiring manual database cleanup or Docker container restarts.
+* **Idempotency (Multiple Executions):** Rather than hardcoding IDs for the POST requests, the test suite utilizes a custom Java utility class (`utils.DataGenerator`) invoked natively from the Karate feature files. This generates dynamic, randomized 4-digit IDs at runtime. This ensures a unique item is created on every test execution, allowing the CI/CD pipeline and local tests to run infinitely without requiring manual database cleanup, Docker container restarts, or risking data collisions.
 * **Environment Agnostic:** Environment variables are managed centrally via `karate-config.js` and dedicated JSON property files inside `src/test/java/config`. The framework can point to `dev`, `qa`, or `prod` dynamically without modifying test logic.
 * **Fuzzy Matchers:** Utilized Karate's fuzzy matching (e.g., `#string`, `#notnull`) for robust schema validation that won't break on minor data updates.
 * **Scenario Isolation:** The item creation, negative duplicate check, and retrieval validation are mapped into a single logical E2E scenario (`@item-lifecycle`) to ensure assertions aren't affected by race conditions or parallel execution.

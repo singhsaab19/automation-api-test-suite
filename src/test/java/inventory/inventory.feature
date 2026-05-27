@@ -1,3 +1,4 @@
+@inventory
 Feature: Inventory Management API Tests
 
   Background:
@@ -56,7 +57,7 @@ Feature: Inventory Management API Tests
 
   @negative @add-duplicate
   Scenario: Add item for existent id
-    # 4. Reuse the existing item JSON for duplicate check
+    # Reuse the existing item JSON for duplicate check
     * def duplicatePayload = read('classpath:testData/inventory/expected-item-3.json')
 
     Given path 'inventory/add'
