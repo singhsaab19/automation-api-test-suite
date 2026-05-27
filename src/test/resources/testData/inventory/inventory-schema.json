@@ -1,0 +1,6 @@
+{
+  "id": "#notnull",
+  "name": "#string",
+  "price": "#string",
+  "image": "#string"
+}

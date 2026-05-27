@@ -77,4 +77,4 @@ To view the reports locally after running Maven:
 1. Navigate to target/karate-reports/.
 
 2. Open karate-summary.html in your preferred web browser.
-![img_1.png](img_1.png)
+![img.png](img.png)
